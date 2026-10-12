@@ -13,6 +13,7 @@ That layer used to be the whole product, because talking to a database was hard.
 
 ## What you give up
 
+- **A partner portal.** In Impartner, partners log in to register deals, see their tier and claim MDF. Here the channel team holds the records: registrations and claims arrive by email or a form you already use, and someone adds them with one command. For most programs with a few dozen partners that is a few minutes a day. If partners must serve themselves, Enterprise DNA builds a partner-facing form or portal on the same database as part of the customised version.
 - **A visual board.** Stages are a table you ask about, not cards you drag.
 - **A phone app.** It runs where Claude Code runs.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.

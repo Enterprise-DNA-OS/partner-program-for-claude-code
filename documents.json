@@ -1,11 +1,36 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "partner-scorecard",
+    "title": "Partner scorecard",
+    "for_each": "select p.id, p.name from partners p where p.state='active' order by p.name",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Tier", "sql": "select current_tier, revenue_12m, currency, certified_now, status, detail, next_tier, revenue_to_next, certified_to_next from tier_status where id=$1" },
+      { "title": "Deal registrations, last 12 months", "sql": "select state, count(*) as registrations, sum(value) as value from registrations where partner_id=$1 and submitted_on>current_date-365 group by state order by state" },
+      { "title": "Open registrations", "sql": "select reference, end_customer, value, expires_on from registrations where partner_id=$1 and state='approved' and expires_on>=current_date order by expires_on" },
+      { "title": "Market development funds", "note": "Amounts exclude GST.", "sql": "select period_start, period_end, allocated, committed, paid, available from mdf_position where id in (select id from mdf_funds where partner_id=$1)" },
+      { "title": "Certified people", "sql": "select c.name, x.name as certification, x.expires_on from certifications x join contacts c on c.id=x.contact_id where c.partner_id=$1 and x.expires_on>=current_date order by x.expires_on" }
+    ]
+  },
+  {
+    "name": "registration-confirmation",
+    "title": "Deal registration confirmation",
+    "for_each": "select id, reference||' '||end_customer as name from registrations where state='approved' and expires_on>=current_date order by reference",
+    "file": "name",
+    "sections": [
+      { "title": "Registration", "sql": "select r.reference, p.name as partner, r.end_customer, r.description, p.currency, r.value from registrations r join partners p on p.id=r.partner_id where r.id=$1" },
+      { "title": "Protection", "note": "The registration protects this opportunity for the partner until the date below. Ask for an extension before it ends.", "sql": "select submitted_on, decided_on as approved_on, decided_by as approved_by, expires_on as protected_until from registrations where id=$1" }
+    ]
+  },
+  {
+    "name": "mdf-remittance",
+    "title": "Market development funds remittance",
+    "for_each": "select id, reference as name from mdf_requests where state='paid' order by paid_on",
+    "file": "name",
+    "sections": [
+      { "title": "Activity", "sql": "select m.reference, p.name as partner, m.activity, m.planned_on, m.proof from mdf_requests m join mdf_funds f on f.id=m.fund_id join partners p on p.id=f.partner_id where m.id=$1" },
+      { "title": "Payment", "note": "Amounts exclude GST.", "sql": "select p.currency, m.requested_amount as pre_approved, m.claimed_amount as claimed, m.approved_amount as paid, m.paid_on, m.payment_ref, coalesce(m.tax_invoice_ref,'Not on file') as your_tax_invoice from mdf_requests m join mdf_funds f on f.id=m.fund_id join partners p on p.id=f.partner_id where m.id=$1" },
+      { "title": "Results reported", "sql": "select leads, pipeline from mdf_requests where id=$1" }
     ]
   }
 ]

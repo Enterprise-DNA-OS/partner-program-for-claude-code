@@ -22,9 +22,34 @@ Fill this in once. A worker with context knows. A worker without it guesses.
 
 | When the operator asks for... | Use this |
 |---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+| What needs doing | `/attention` |
+| Registrations waiting on us | `/to-decide`, then `/approve-registration` or `/reject-registration` |
+| Two partners on one customer | `/conflicts` |
+| Protection ending or lapsed | `/expiring`, `/extend-registration`, `/expire-registrations` |
+| A registered deal closed | `/close-registration` |
+| Registered pipeline, win rates | `/pipeline`, `/win-rate` |
+| Who is below, at risk of, or ready for a tier | `/tier-review`, then `/set-tier` |
+| Certifications lapsing | `/certifications` |
+| MDF left in each fund | `/mdf` |
+| MDF requests and claims waiting | `/mdf-queue`, then `/preapprove-mdf`, `/claim-mdf`, `/approve-claim`, `/pay-mdf`, `/tax-invoice` or `/reject-mdf` |
+| What MDF returned | `/mdf-return` |
+| Revenue by partner | `/partner-revenue` |
+| New partners stuck | `/onboarding`, `/complete-step` |
+| Agreements missing or ending | `/partner-watch` |
+| Rule checks | `/compliance` |
+| Partners gone quiet | `/quiet-partners` |
+| The Monday review | `/weekly-review` |
+| A letter about a partner's tier | `/draft-tier-letter` |
+| Tell a partner the decision on a registration | `/draft-registration-reply` |
+| A QBR pack | `/draft-qbr` |
+| One partner or one registration | `/partner`, `/registration`, `/search` |
+| Add a record | `/add`, `/log` |
+| Bring Impartner data across | `/import` |
+| Back up | `/export` |
+| Change how it works | `/customise` |
+| A new report | `/new-view` |
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+If an ask fits nothing here, run the CLI directly (`npm run partners -- help`) and then propose a new command for it.
 
 ## Hard rules
 
@@ -32,6 +57,15 @@ If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) an
 - Never delete records without an explicit yes in this session. Prefer marking closed or archived.
 - Never invent a record. If a name is ambiguous, list the candidates and ask.
 - The database is the source of truth. If the answer is not in it, say so.
+
+## Partner program rules
+
+- Amounts exclude GST and are in the partner's currency (NZD for NZ, AUD for AU). Never add NZD to AUD.
+- Never change a partner's tier without the operator's say-so. Quote `tier-review` in the reason.
+- Never approve a registration that clashes without a reason the operator gave. The override is on the record.
+- An MDF claim is approved by a different person from whoever pre-approved it, never above the pre-approved amount, and only with proof. Never approve on the operator's behalf with someone else's name.
+- Read docs/compliance.md before reporting rule checks. They are prompts, not legal or tax advice.
+- The demo data is fictional. Never present it as real.
 
 ## Where things live
 

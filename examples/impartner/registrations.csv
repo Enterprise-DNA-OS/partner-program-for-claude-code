@@ -1,0 +1,4 @@
+Id,Deal Registration Number,Account Id,Customer Company,Customer Website,Amount,Status,Submitted Date,Expiration Date
+IMP-D1,DR-10021,IMP-A1,Wellington Bus Depots,https://www.wgtnbus.example/,"$48,000.00",Approved,2026-08-03,2026-11-01
+IMP-D2,DR-10022,IMP-A2,Parramatta Fleet Services,pfs.example,22000,Pending Review,2026-10-05,
+IMP-D3,DR-10023,IMP-A1,Hawke's Bay Orchards,hborchards.example,15000,Closed Won,2026-05-10,

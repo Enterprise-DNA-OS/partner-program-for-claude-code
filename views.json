@@ -1,14 +1,24 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Partner Program for Claude Code: what needs attention, rendered by npm run view",
+    "title": "The partner program this week",
+    "subtitle": "Decisions owed, clashes, tiers that moved, and money waiting on someone",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Needs attention", "sql": "select kind, partner, item, detail from (select 'decide' as kind,partner,reference as item,promise||', waiting '||days_waiting||' days' as detail from registrations_to_decide union all select 'protection',partner,reference,case when days_left<0 then 'Lapsed '||(-days_left)||' days ago' else 'Ends in '||days_left||' days' end from registrations_expiring where days_left<=14 union all select 'mdf',partner,reference,finding from mdf_queue union all select 'onboarding',partner,step,'Overdue '||days_overdue||' days' from onboarding_stuck union all select 'agreement',partner,state,issue from partner_watch union all select 'rule',partner,record,rule from compliance_gaps) x order by kind, partner" },
+      { "title": "Registrations that clash", "note": "Two partners on one customer, or a partner on a direct account. Decide before approving.", "sql": "select reference, partner, end_customer, clashes_with, other_party, matched_on from registration_conflicts order by end_customer" },
+      { "title": "Tier review", "note": "Revenue is the last 12 months. Certified means at least one current certification.", "sql": "select partner, current_tier, revenue_12m, certified_now, status, detail from tier_status where status<>'On tier' order by partner" },
+      { "title": "MDF waiting on someone", "sql": "select reference, partner, activity, state, amount, finding from mdf_queue order by days desc" }
+    ]
+  },
+  {
+    "name": "program",
+    "title": "Partner program health",
+    "subtitle": "Revenue, tiers, win rates and what market development funds returned",
+    "sections": [
+      { "title": "Revenue by partner, last 12 months", "sql": "select partner, currency, revenue_12m, registered_12m, round(100*registered_12m/nullif(revenue_12m,0),0) as pct_registered, last_sale from partner_revenue where state<>'exited' order by revenue_12m desc" },
+      { "title": "Every active partner against its tier", "sql": "select partner, current_tier, earns, status, next_tier, revenue_to_next, certified_to_next from tier_status order by partner" },
+      { "title": "Market development funds", "sql": "select partner, currency, allocated, committed, paid, available, pct_paid, days_left from mdf_position order by partner" },
+      { "title": "Partners gone quiet", "sql": "select partner, kind, owner, last_registration, last_sale from quiet_partners order by partner" }
     ]
   }
 ]
